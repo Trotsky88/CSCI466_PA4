@@ -156,8 +156,37 @@ class Router:
     ## Print routing table
     def print_routes(self):
         #TODO: print the routes as a two dimensional table
-        print(self.rt_tbl_D)
+        #print(self.rt_tbl_D)
+        print("_______", end = "", flush = True)
 
+        for i in self.rt_tbl_D:
+            print("_______", end = "", flush = True)
+
+        print("_")
+        print("│ " + self.name + "   |", end = "", flush = True)
+
+        for i in self.rt_tbl_D:
+            print(" " + i + "   |", end = "", flush = True)
+
+        print()
+        print("|______", end = "", flush = True)
+
+        for i in self.rt_tbl_D:
+            print("|______", end = "", flush = True)
+
+        print("|")
+        print("│ " + self.name + "   |", end = "", flush = True)
+
+        for i in self.rt_tbl_D:
+            for j in self.rt_tbl_D[i]:
+                print(" " + str(self.rt_tbl_D[i][j]) + "    |", end = "", flush = True)
+
+        print()
+        print("|______", end = "", flush = True)
+
+        for i in self.rt_tbl_D:
+            print("|______", end = "", flush = True)
+        print("|")
 
     ## called when printing the object
     def __str__(self):
@@ -203,7 +232,18 @@ class Router:
     def send_routes(self, i):
         # TODO: Send out a routing table update
         #create a routing table update packet
-        p = NetworkPacket(0, 'control', 'DUMMY_ROUTING_TABLE')
+        message = ""
+        for j in self.rt_tbl_D:
+            message += str(j)
+            for k in self.rt_tbl_D[j]:
+                message += str(self.rt_tbl_D[j][k])
+            message+= "|"
+            # if "RB" in message:
+            #     message += ")"
+            # else:
+            #     message += "("
+        p = NetworkPacket(0, 'control', message)
+        #p = NetworkPacket(0, 'control', 'DUMMY_ROUTING_TABLE')
         try:
             print('%s: sending routing update "%s" from interface %d' % (self, p, i))
             self.intf_L[i].put(p.to_byte_S(), 'out', True)
@@ -217,6 +257,36 @@ class Router:
     def update_routes(self, p, i):
         #TODO: add logic to update the routing tables and
         # possibly send out routing updates
+        temp1 = {}
+        temp2 = {}
+        message = p.to_byte_S()
+        j = 0
+        while(j < len(message)):
+            if(message[j] == "|"):
+                current = message[j-3:j-1]
+                cost = int(message[j-1])
+                temp2[current] = cost
+                temp1[message[j-5:j-3]] = temp2
+            temp2 = {}
+            j+=1
+
+        j = 0
+        for j in temp1:
+            if j in self.rt_tbl_D:
+                break
+            else:
+                temp3 = 1
+
+                for k in temp1[j]:
+                    temp3 += temp1[j][k]
+
+                temp4 = {self.name: temp3}
+                self.rt_tbl_D[j] = temp4
+
+
+
+
+
         print('%s: Received routing update %s from interface %d' % (self, p, i))
 
                 
@@ -226,5 +296,5 @@ class Router:
         while True:
             self.process_queues()
             if self.stop:
-                print (threading.currentThread().getName() + ': Ending')
-                return 
+                print(threading.currentThread().getName() + ': Ending')
+                return
