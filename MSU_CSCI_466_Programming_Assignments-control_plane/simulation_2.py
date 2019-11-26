@@ -24,7 +24,7 @@ if __name__ == '__main__':
                               max_queue_size=router_queue_size)
     object_L.append(router_a)
 
-    cost_D = {'RD': {1: 1}, 'RA': {0: 2}}  # {neighbor: {interface: cost}}
+    cost_D = {'H2': {1: 1}, 'RA': {0: 2}}  # {neighbor: {interface: cost}}
     router_b = network.Router(name='RB',
                               cost_D=cost_D,
                               max_queue_size=router_queue_size)
