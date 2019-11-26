@@ -275,12 +275,12 @@ class Router:
         i = 0
         while (i < len(msg)):
             if (msg[i] == "|"):
-                cur_router = msg[i - 3:i - 1]
-                cost = int(msg[i - 1])
+                cur_router = msg[i-3:i-1]
+                cost = int(msg[i-1])
                 temp2[cur_router] = cost
-                temp1[msg[i - 5:i - 3]] = temp2
+                temp1[msg[i-5:i-3]] = temp2
             temp2 = {}
-            i += 1
+            i+= 1
 
         for j in temp1:
             if j in self.rt_tbl_D:
