@@ -219,7 +219,7 @@ class Router:
                     self.intf_L[2].put(p.to_byte_S(), 'out', True)
                     print('%s: forwarding packet "%s" from interface %d to %d' % \
                       (self, p, i, 2))
-                 else:
+                else:
                     self.intf_L[1].put(p.to_byte_S(), 'out', True)
                     print('%s: forwarding packet "%s" from interface %d to %d' % \
                       (self, p, i, 1))
