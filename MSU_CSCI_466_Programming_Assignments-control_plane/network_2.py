@@ -218,7 +218,6 @@ class Router:
         try:
             # TODO: Here you will need to implement a lookup into the 
             dest = p.to_byte_S()
-            #dest = dest[0:5].strip("0")
             if "H2" in dest:
                 self.intf_L[1].put(p.to_byte_S(), 'out', True)
                 print('%s: forwarding packet "%s" from interface %d to %d' % \
