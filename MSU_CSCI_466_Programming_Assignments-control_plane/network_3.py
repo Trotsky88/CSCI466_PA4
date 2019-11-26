@@ -134,6 +134,7 @@ class Router:
         self.stop = False  # for thread termination
         self.name = name
         # create a list of interfaces
+        self.flag = True
         self.iList = {}
         self.intf_L = [Interface(max_queue_size) for _ in range(len(cost_D))]
         # save neighbors and interfeces on which we connect to them
@@ -270,31 +271,32 @@ class Router:
         # possibly send out routing updates
         temp1 = {}
         temp2 = {}
-        message = p.to_byte_S()
-        j = 0
-        while (j < len(message)):
-            if (message[j] == "|"):
-                current = message[j - 3:j - 1]
-                cost = int(message[j - 1])
-                temp2[current] = cost
-                temp1[message[j - 5:j - 3]] = temp2
+        msg = p.to_byte_S()
+        i = 0
+        while (i < len(msg)):
+            if (msg[i] == "|"):
+                cur_router = msg[i - 3:i - 1]
+                cost = int(msg[i - 1])
+                temp2[cur_router] = cost
+                temp1[msg[i - 5:i - 3]] = temp2
             temp2 = {}
-            j += 1
+            i += 1
 
-        j = 0
         for j in temp1:
             if j in self.rt_tbl_D:
                 break
             else:
-                temp3 = 1
-
-                for k in temp1[j]:
-                    temp3 += temp1[j][k]
-
-                temp4 = {self.name: temp3}
-                self.rt_tbl_D[j] = temp4
+                temp = 1
+                for cur in temp1[j]:
+                    temp += temp1[j][cur]
+                temp_dct = {self.name: temp}
+                self.rt_tbl_D[j] = temp_dct
 
         print('%s: Received routing update %s from interface %d' % (self, p, i))
+        if self.flag:
+            for inter in self.iList:
+                self.send_routes(inter)
+            self.flag = False
 
     ## thread target for the host to keep forwarding data
     def run(self):
