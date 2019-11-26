@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     cost_D = {'RB': {0: 3}, 'RC': {1: 4}, 'H2': {2: 3}}
     router_d = network.Router(name='RD',
-                              csot_D=cost_D,
+                              cost_D=cost_D,
                               max_queue_size=router_queue_size)
     object_L.append(router_d)
 
